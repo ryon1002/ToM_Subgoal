@@ -26,12 +26,10 @@ def sumerizeProbs2(dists):
         prob[sg] = p
     return prob
 
-def independentModel(graph_data, sampler):
+def independentModel(graph_data, factor):
     dists = []
     for d in graph_data:
-        dist = sampler.getParamDist(d[0], d[1])
-        dist = (dist[0], [p * d[1].getProbability(d[0], theta) for theta, p in zip(dist[0], dist[1])])
-        dist = (dist[0], dist[1] / np.sum(dist[1]))
+        dist = factor.getDistThetaGivenX(d)
         dists.append(zip(*dist))
     return sumerizeProbs2(dists)
 

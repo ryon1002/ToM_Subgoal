@@ -2,8 +2,8 @@ import numpy as np
 from collections import defaultdict
 
 class CrpGibbs():
-    def __init__(self, prior, gamma):
-        self.prior = prior
+    def __init__(self, factor, gamma):
+        self.factor = factor
         self.gamma = float(gamma)
 
     def gibbs(self, graph_data, repeat, burnIn, adjustTheta=False):
@@ -92,5 +92,5 @@ class CrpGibbs():
     
     def getxGtheta(self, xIndex, theta):
         if (xIndex, theta) not in self.xGtheta:
-            self.xGtheta[(theta, xIndex)] = self.i_xMap[xIndex][1].getProbability(self.i_xMap[xIndex][0], self.i_thetaMap[theta])
+            self.xGtheta[(theta, xIndex)] = self.factor.getPThetaGivenX(self.i_xMap[xIndex], self.i_thetaMap[theta])
         return self.xGtheta[(xIndex, theta)]

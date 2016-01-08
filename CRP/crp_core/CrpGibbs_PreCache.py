@@ -1,5 +1,5 @@
 import numpy as np
-from crp import CrpGibbs
+from crp_core import CrpGibbs
 import itertools
 
 class CrpGibbs_PreCache(CrpGibbs.CrpGibbs):
@@ -7,11 +7,10 @@ class CrpGibbs_PreCache(CrpGibbs.CrpGibbs):
         CrpGibbs.CrpGibbs.preCalc(self)
         xDist = {}
         for xi, x in self.i_xMap.viewitems():
-            items = np.array(sorted({f for s, f in x[1].flagMap.viewitems() if s in x[0]}))
-            param = [items[np.array(f)] for f in itertools.product([True, False], repeat=len(items))]
-            for p in param:
-                xDist[(self.thetaMap[tuple(p)], xi)] = x[1].getProbability(x[0], p)
-        self.theta0 = np.array([self.prior.getThetaProb(sg) for sg, _i in sorted(self.thetaMap.viewitems(), key=lambda x:x[1])])
+            self.thetas = self.factor.getThetasGivenX(x)
+            for theta in self.thetas:
+                xDist[(self.thetaMap[tuple(theta)], xi)] = self.factor.getPThetaGivenX(x, theta)
+        self.theta0 = np.array([self.factor.getThetaProb(sg) for sg, _i in sorted(self.thetaMap.viewitems(), key=lambda x:x[1])])
 
         self.xGtheta = np.zeros((len(self.thetaMap), len(self.i_xMap)))
         for k, v in xDist.items():

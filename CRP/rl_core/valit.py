@@ -6,10 +6,8 @@ def normilization(arr, axis):
     return arr / normalization_coefficient
 
 def valit(T, R, d=1):
-#     print T
     v = np.zeros(T.shape[1])
     for _i in range(500):
-#         n_v = np.max(np.sum(T * R + T * v * d, axis=2), axis=0)
         t_n_v = np.sum(T * R + T * v * d, axis=2)
         n_v = np.max(t_n_v, axis=0)
         chk = np.sum(np.abs(n_v - v))
