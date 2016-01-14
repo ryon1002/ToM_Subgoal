@@ -7,10 +7,6 @@ import run_crp, CompareTool
 np.random.seed(1)
 np.set_printoptions(edgeitems=3200, linewidth=1000, precision=6)
 
-layer = ((3,),)
-# layer = ((2, 3),)
-# layer = ((3,), (3,))
-# layer = ((2, 3), (2, 3))
 comb = list(itertools.permutations(range(3), 3))
 itemData = {1:{0:67, 1:70, 2:73}, 2:{0:112, 1:115, 2:118}, 3:{0:157, 1:160, 2:163}}
 goalIndex = [210, 214, 217]
@@ -29,16 +25,12 @@ def getOneSubgoal(layer):
             subgoals[g] = tuple(subgoal)
         yield subgoals
 
-import datetime
-measure_start_time = datetime.datetime.now()
-
-subgoals = []
-subgoals.append({217: ((163, 217),), 210: ((157, 210),), 214: ((160, 214),)})
-subgoals.append({217: ((163, 217), (163, 217)), 210: ((157, 210), (157, 210)), 214: ((160, 214), (160, 214))})
-subgoals.append({217: ((118, 163, 217),), 210: ((112, 157, 210),), 214: ((115, 160, 214),)})
-# subgoals = {n:i for n, i in enumerate(getOneSubgoal(layer))}
-# subgoals[0] = {217: ((163, 217), (157, 217)), 210: ((157, 210), (160, 210)), 214: ((160, 214), (163, 214))}
 input_num = int(sys.argv[1]) if len(sys.argv) > 1 else 11;
+
+layers = [((3,),), ((2, 3),), ((3,), (3,))]
+# layers = [((3,),)]
+sbGens = [getOneSubgoal(l) for l in layers]
+subgoals = [sb for sb in itertools.chain(*sbGens)]
 
 graph_data = makeFlagData.makeData()
 mdp = FlagMDP.FlagMDP(graph_data, 2)
@@ -50,7 +42,7 @@ def printResult(result, sumFunc, preStr):
     for r in ret : print r,
     print
 
-tryNum = 2
+tryNum = 6
 np.random.seed(1)
 result = np.zeros((0, 6))
 for _t in range(tryNum):
@@ -66,5 +58,3 @@ for _t in range(tryNum):
     result = np.r_[result, [np.average(tmpResult, axis=0)]]
 printResult(result, np.average, "s")
 printResult(result, np.var, "v")
-
-print datetime.datetime.now() - measure_start_time

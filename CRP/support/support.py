@@ -41,8 +41,8 @@ def runSupprot(mdp, gtSubgoal, crp_result):
         for _j in range(roopNum):
             for g in [210, 214, 217]:
                 for sg in  gtSubgoal[g]:
-                    # ret = com.run(random.randint(0, 11), 132, g, sg)
-                    ret = com.run(_j % 11, 132, g, sg)
+                    ret = com.run(random.randint(0, 11), 132, g, sg)
+#                     ret = com.run(_j % 11, 132, g, sg)
                     debug_ret.append(ret)
                     score += calcScore(*ret[1])
         result.append(float(score) / (roopNum * sum([len(v) for v in gtSubgoal.values()])))
